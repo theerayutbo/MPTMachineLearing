@@ -19,9 +19,14 @@ if 'master_df' not in st.session_state:
 st.sidebar.header("Data Loading")
 data_dir = st.sidebar.text_input("Enter the path to the Measurement_Data directory", "Measurement_Data/")
 if st.sidebar.button("Load and Process Data"):
-    all_files = glob.glob(os.path.join(data_dir, 'metal', '*', '*', '*', '*', 'summary_results.csv'))
+    if not os.path.isdir(data_dir):
+        st.error(f"Directory not found: {data_dir}")
+        st.stop()
+
+    search_path = os.path.join(data_dir, 'metal', '*', '*', '*', '*', 'summary_results.csv')
+    all_files = glob.glob(search_path)
     if not all_files:
-        st.error("No 'summary_results.csv' files found. Please check the directory structure.")
+        st.error(f"No 'summary_results.csv' files found. Searched in: {search_path}")
         st.stop()
 
     df_list = []
